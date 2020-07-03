@@ -1,62 +1,44 @@
-import React, { useContext, useRef, useState } from 'react';
-import { Portal } from './Portal';
+import React, { useContext, useState } from 'react';
 
-interface ContextMenuCoordinates {
-  x: number;
-  y: number;
-}
-
-export const useContextMenu = () => {
-  const [coordinates, setCoordinates] = useState<ContextMenuCoordinates | null>(
-    null,
-  );
+export const useContextMenu = (Element: React.ReactNode) => {
   const context = useContext(ContextMenuContext);
 
   if (context == null) {
-    throw new Error('useContextMenu must be used inside ContextMenuProvider');
+    throw new Error('makeContextMenu must be used inside ContextMenuProvider');
   }
 
-  const Container: React.FC = ({ children }) => (
-    <Portal to={context.ref}>
-      {coordinates && (
+  return {
+    visible: context.isActive,
+    show: (e: React.MouseEvent) =>
+      context.setActive(
         <div
           style={{
             position: 'absolute',
-            top: coordinates.y,
-            left: coordinates.x,
+            top: e.clientY,
+            left: e.clientX,
           }}
         >
-          {children}
-        </div>
-      )}
-    </Portal>
-  );
-
-  return [
-    Container,
-    {
-      showContextMenu: (e: React.MouseEvent) => {
-        setCoordinates({
-          x: e.clientX,
-          y: e.clientY,
-        });
-      },
-      hideContextMenu: () => setCoordinates(null),
-    },
-  ] as const;
+          {Element}
+        </div>,
+      ),
+    hide: () => context.setActive(null),
+  };
 };
 
 const ContextMenuContext = React.createContext<{
-  ref: React.RefObject<HTMLElement>;
+  isActive: boolean;
+  setActive: (Element: React.ReactNode) => void;
 } | null>(null);
 
 export const ContextMenuProvider: React.FC = ({ children }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState<React.ReactNode | null>(null);
 
   return (
-    <ContextMenuContext.Provider value={{ ref }}>
+    <ContextMenuContext.Provider
+      value={{ setActive, isActive: active != null }}
+    >
       {children}
-      <div ref={ref} />
+      <div>{active}</div>
     </ContextMenuContext.Provider>
   );
 };
