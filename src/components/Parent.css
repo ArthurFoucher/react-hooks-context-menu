@@ -1,0 +1,10 @@
+.parent {
+  padding: 0 20px;
+}
+
+.group {
+  padding-bottom: 30px;
+  display: flex;
+  justify-content: space-around;
+  height: 200px;
+}
