@@ -4,7 +4,7 @@ export const useContextMenu = (Element: React.ReactNode) => {
   const context = useContext(ContextMenuContext);
 
   if (context == null) {
-    throw new Error('makeContextMenu must be used inside ContextMenuProvider');
+    throw new Error('useContextMenu must be used inside ContextMenuProvider');
   }
 
   return {
