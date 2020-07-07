@@ -2,13 +2,15 @@ import React from 'react';
 import { useShowContextMenu } from '../context-menu/useShowContextMenu';
 import { useHideContextMenu } from '../context-menu/useHideContextMenu';
 import './Child.css';
+import { useContextMenuState } from '../context-menu/useContextMenuState';
 
 interface Props {
   color: string;
 }
 
 export const ChildWithRawApi: React.FC<Props> = ({ color, children }) => {
-  const { hide, visible } = useHideContextMenu();
+  const { visible } = useContextMenuState();
+  const { hide } = useHideContextMenu();
   const { show } = useShowContextMenu(`${color}`);
 
   return (

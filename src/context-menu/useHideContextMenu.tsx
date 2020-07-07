@@ -1,10 +1,9 @@
 import { useContextMenu } from './useContextMenu';
 
 export const useHideContextMenu = () => {
-  const { isActive, setActive } = useContextMenu();
+  const { setActive } = useContextMenu();
 
   return {
-    visible: isActive,
     hide() {
       setActive(null);
     },
